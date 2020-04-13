@@ -9,6 +9,8 @@ var items = {};
 
 exports.create = (text, callback) => {
   var id = counter.getNextUniqueId();
+  // fs.writeFile to create a new file and store text on that file
+
   items[id] = text;
   callback(null, { id, text });
 };
@@ -59,3 +61,12 @@ exports.initialize = () => {
     fs.mkdirSync(exports.dataDir);
   }
 };
+
+
+// exports.create = (text, callback) => {
+//   var id = counter.getNextUniqueId();
+//   // fs.writeFile to create a new file and store text on that file
+
+//   items[id] = text;
+//   callback(null, { id, text });
+// };

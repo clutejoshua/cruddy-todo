@@ -38,12 +38,44 @@ const writeCounter = (count, callback) => {
 
 // Public API - Fix this function //////////////////////////////////////////////
 
-exports.getNextUniqueId = () => {
-  counter = counter + 1;
+exports.getNextUniqueId = (callback) => {
+  readCounter((err, number) => {
+    if (err) {
+      console.log('Error getting unique ID');
+    } else {
+      counter = number + 1;
+      writeCounter(counter, (err, paddedString) => {
+        //set counter on page to equal number
+        if (err) {
+          console.log('writeCounter Error');
+        } else {
+          console.log('Counter saved to Server');
+          callback(null, paddedString);
+        }
+      });
+    }
+  });
+
   return zeroPaddedNumber(counter);
 };
 
 
+// exports.getNextUniqueId = (callback) => {
+//   // use read counter function to read file
+//   readCounter((err, fileData) => {
+//     // get current counter number
+//     // if there is an error
+//     if (err) {
+//       // run the callback
+//       callback(null, 0);
+//       // otherwise
+//     } else {
+//       // write counter file after having added 1 to counter
+//       counter = fileData + 1;
+//       writeCounter(counter, callback);
+//     }
+//   });
+// };
 
 // Configuration -- DO NOT MODIFY //////////////////////////////////////////////
 
