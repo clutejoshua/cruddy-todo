@@ -49,7 +49,7 @@ exports.getNextUniqueId = (callback) => {
         if (err) {
           console.log('writeCounter Error');
         } else {
-          console.log('Counter saved to Server');
+          // console.log('Counter saved to Server');
           callback(null, paddedString);
         }
       });

@@ -8,11 +8,25 @@ var items = {};
 // Public API - Fix these CRUD functions ///////////////////////////////////////
 
 exports.create = (text, callback) => {
-  var id = counter.getNextUniqueId();
-  // fs.writeFile to create a new file and store text on that file
+//var id = counter.getNextUniqueId(callback?)
+//var filename = `exports.dataDir/${id}.txt`
+//fs.writeFile(filename, text, (err) => {})
 
-  items[id] = text;
-  callback(null, { id, text });
+  counter.getNextUniqueId((err, id) => {
+    if (err) {
+      throw err;
+    } else {
+      // fs.writeFile to create a new file and store text on that file
+      var filename = path.join(exports.dataDir, `${id}.txt`);
+      fs.writeFile(filename, text, (err) => {
+        if (err) {
+          throw err;
+        } else {
+          callback(null, { id, text });
+        }
+      });
+    }
+  });
 };
 
 exports.readAll = (callback) => {
@@ -65,8 +79,7 @@ exports.initialize = () => {
 
 // exports.create = (text, callback) => {
 //   var id = counter.getNextUniqueId();
-//   // fs.writeFile to create a new file and store text on that file
-
+//
 //   items[id] = text;
 //   callback(null, { id, text });
 // };
