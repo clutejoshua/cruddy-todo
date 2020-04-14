@@ -79,13 +79,44 @@ exports.readOne = (id, callback) => {
 };
 
 exports.update = (id, text, callback) => {
+  //
   var item = items[id];
-  if (!item) {
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    items[id] = text;
-    callback(null, { id, text });
-  }
+
+  var filePath = path.join(exports.dataDir, `${id}.txt`);
+
+  fs.readFile(filePath, err => {
+    if (err) {
+      callback(new Error(`No item with id: ${id}`));
+    } else {
+      fs.writeFile(filePath, text, 'utf8', (err) => {
+        if (err) {
+          throw err;
+        } else {
+          callback(null, {id, text});
+        }
+
+      });
+
+    }
+  });
+
+  // function readWriteAsync() {
+  //   fs.readFile('filelist.txt', 'utf-8', function(err, data){
+  //     if (err) throw err;
+  //     var newValue = data.replace(/^\./gim, 'myString');
+  //     fs.writeFile('filelistAsync.txt', newValue, 'utf-8', function (err) {
+  //       if (err) throw err;
+  //       console.log('filelistAsync complete');
+  //     });
+  //   });
+  // }
+
+  // if (!item) {
+  //   callback(new Error(`No item with id: ${id}`));
+  // } else {
+  //   items[id] = text;
+  //   callback(null, { id, text });
+  // }
 };
 
 exports.delete = (id, callback) => {
