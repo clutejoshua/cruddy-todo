@@ -2,8 +2,13 @@ const fs = require('fs');
 const path = require('path');
 const _ = require('underscore');
 const counter = require('./counter');
+const sprintf = require('sprintf-js').sprintf;
 
 var items = {};
+
+const zeroPaddedNumber = (num) => {
+  return sprintf('%05d', num);
+};
 
 // Public API - Fix these CRUD functions ///////////////////////////////////////
 
@@ -30,10 +35,37 @@ exports.create = (text, callback) => {
 };
 
 exports.readAll = (callback) => {
-  var data = _.map(items, (text, id) => {
-    return { id, text };
+
+  /*
+{ 0: "000.txt"
+  1: "0001.txt"
+}
+*/
+
+  var directory = exports.dataDir;
+
+  _.map(directory, (text, index) => {
+    var filename = zeroPaddedNumber(index + 1);
+    var filePath = path.join(exports.dataDir, `${filename}.txt`);
+    fs.readFile(filePath, (err, text) => {
+      if (err) {
+        throw err;
+      } else {
+        callback(null, { filename, text });
+      }
+    });
+
   });
-  callback(null, data);
+
+  // set map to a variable then do something with that variable
+  // look at promise.all() and different fs.read functions
+  //
+
+  // var data = _.map(items, (text, id) => {
+  //   return { id, text };
+  // });
+
+  // callback(null, data);
 };
 
 exports.readOne = (id, callback) => {
