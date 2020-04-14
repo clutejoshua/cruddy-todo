@@ -35,46 +35,47 @@ exports.create = (text, callback) => {
 };
 
 exports.readAll = (callback) => {
+  fs.readdir(exports.dataDir, (err, files) => {
+    if ( err ) {
+      throw err;
+    } else {
 
-  /*
-{ 0: "000.txt"
-  1: "0001.txt"
-}
-*/
-
-  var directory = exports.dataDir;
-
-  _.map(directory, (text, index) => {
-    var filename = zeroPaddedNumber(index + 1);
-    var filePath = path.join(exports.dataDir, `${filename}.txt`);
-    fs.readFile(filePath, (err, text) => {
-      if (err) {
-        throw err;
-      } else {
-        callback(null, { filename, text });
-      }
-    });
-
+      var array = _.map(files, (text, index) => {
+        var id = zeroPaddedNumber(index + 1);
+        var filePath = path.join(exports.dataDir, `${id}.txt`);
+        text = text.slice(0, -4);
+        var file = {id, text};
+        fs.readFile(filePath, (err, contents) => {
+          if (err) {
+            throw err;
+          } else {
+            //edit the object
+            file.text = contents;
+          }
+        });
+        return file;
+      });
+      // Promise.all(array).then(array => callback(null, array));
+      callback(null, array);
+    }
   });
 
-  // set map to a variable then do something with that variable
-  // look at promise.all() and different fs.read functions
-  // fs.readfilesync() node.js
-
-  // var data = _.map(items, (text, id) => {
-  //   return { id, text };
-  // });
-
-  // callback(null, data);
 };
 
 exports.readOne = (id, callback) => {
   var text = items[id];
-  if (!text) {
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    callback(null, { id, text });
+  //find file path using id
+  var filePath = path.join(exports.dataDir, `${id}.txt`);
+
+  //fs.readFile
+  fs.readFile(filePath, 'utf8', (err, text) => {
+    if (err) {
+      callback(new Error(`No item with id: ${id}`));
+    } else {
+      callback(null, { id, text });
+    }
   }
+  );
 };
 
 exports.update = (id, text, callback) => {
