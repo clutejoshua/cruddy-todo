@@ -59,7 +59,7 @@ exports.readAll = (callback) => {
 
   // set map to a variable then do something with that variable
   // look at promise.all() and different fs.read functions
-  //
+  // fs.readfilesync() node.js
 
   // var data = _.map(items, (text, id) => {
   //   return { id, text };
